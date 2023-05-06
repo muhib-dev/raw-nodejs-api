@@ -1,0 +1,16 @@
+{
+  "name": "raw-nodejs-api",
+  "version": "1.0.0",
+  "description": "a raw nodejs api",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon --ignore db/ --exec node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "muhibullah",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
