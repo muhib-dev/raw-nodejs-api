@@ -1,7 +1,6 @@
-const fs = require("fs");
-const filePath = require("../utils/filePath");
 const userSevice = require("../services/userSevice");
 const response = require("../utils/response");
+const { writeDataAsync } = require("../utils/fileHelperAsync");
 
 /**
  * Controller function to create new user
@@ -9,10 +8,10 @@ const response = require("../utils/response");
  * @param {import('http').ServerResponse} res - The server response object.
  * @returns {import('http').ServerResponse} The server response
  */
-const createUser = (req, res) => {
+const createUser = async (req, res) => {
   try {
     let body = req.body;
-    const users = userSevice.getUsers();
+    const users = await userSevice.getUsers();
 
     const foundUser = users.find((user) => user.name === body.name);
 
@@ -26,7 +25,7 @@ const createUser = (req, res) => {
     body.id = users.length + 1;
     users.push(body);
 
-    fs.writeFileSync(filePath, JSON.stringify(users));
+    await writeDataAsync(users);
 
     response(res, { data: users, status: 201 });
   } catch (error) {
@@ -40,10 +39,14 @@ const createUser = (req, res) => {
  * @param {import('http').ServerResponse} res - The server response object.
  * @returns {import('http').ServerResponse} The server response
  */
-const getUsers = (req, res) => {
-  const users = userSevice.getUsers();
+const getUsers = async (req, res) => {
+  try {
+    const users = await userSevice.getUsers();
 
-  response(res, { data: users });
+    response(res, { data: users });
+  } catch (error) {
+    response(res, { status: 400, data: { message: error.message } });
+  }
 };
 
 /**
@@ -52,13 +55,17 @@ const getUsers = (req, res) => {
  * @param {import('http').ServerResponse} res - The server response object.
  * @returns {import('http').ServerResponse} The server response
  */
-const getUserById = (req, res) => {
-  const { id } = req.params;
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  const user = userSevice.getUserById(id);
+    const user = await userSevice.getUserById(id);
 
-  const data = user ? user : { message: `user not found for id '${id}'` };
-  response(res, { data });
+    const data = user ? user : { message: `user not found for id '${id}'` };
+    response(res, { data });
+  } catch (error) {
+    response(res, { status: 400, data: { message: error.message } });
+  }
 };
 
 /**
@@ -67,32 +74,39 @@ const getUserById = (req, res) => {
  * @param {import('http').ServerResponse} res - The server response object.
  * @returns {import('http').ServerResponse} The server response
  */
-const updateUser = (req, res) => {
-  const { id } = req.params;
-  let users = userSevice.getUsers();
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let users = await userSevice.getUsers();
 
-  const foundUser = users.find((user) => user.id === Number(id));
-  if (!foundUser) {
-    return response(res, { data: { message: "user not found" }, status: 400 });
-  }
-
-  users = users.map((user) => {
-    if (user.id === Number(id)) {
-      return {
-        ...user,
-        ...req.body,
-      };
+    const foundUser = users.find((user) => user.id === Number(id));
+    if (!foundUser) {
+      return response(res, {
+        data: { message: "user not found" },
+        status: 400,
+      });
     }
-    return user;
-  });
 
-  fs.writeFileSync(filePath, JSON.stringify(users));
+    users = users.map((user) => {
+      if (user.id === Number(id)) {
+        return {
+          ...user,
+          ...req.body,
+        };
+      }
+      return user;
+    });
 
-  response(res, {
-    data: users,
-    status: 201,
-    message: "user successfully updated",
-  });
+    await writeDataAsync(users);
+
+    response(res, {
+      data: users,
+      status: 201,
+      message: "user successfully updated",
+    });
+  } catch (error) {
+    response(res, { status: 400, data: { message: error.message } });
+  }
 };
 
 /**
@@ -101,19 +115,27 @@ const updateUser = (req, res) => {
  * @param {import('http').ServerResponse} res - The server response object.
  * @returns {import('http').ServerResponse} The server response
  */
-const deleteUserById = (req, res) => {
-  const { id } = req.params;
-  let users = userSevice.getUsers();
+const deleteUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let users = await userSevice.getUsers();
 
-  const foundUser = users.find((user) => user.id === Number(id));
-  if (!foundUser) {
-    return response(res, { data: { message: "user not found" }, status: 400 });
+    const foundUser = users.find((user) => user.id === Number(id));
+    if (!foundUser) {
+      return response(res, {
+        data: { message: "user not found" },
+        status: 400,
+      });
+    }
+
+    users = users.filter((user) => user.id !== Number(id));
+
+    await writeDataAsync(users);
+
+    response(res, { status: 204 });
+  } catch (error) {
+    response(res, { status: 400, data: { message: error.message } });
   }
-
-  users = users.filter((user) => user.id !== Number(id));
-  fs.writeFileSync(filePath, JSON.stringify(users));
-
-  response(res, { status: 204 });
 };
 
 module.exports = {

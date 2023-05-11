@@ -1,15 +1,11 @@
-const fs = require("fs");
-const filePath = require("../utils/filePath");
+const { readDataAsync } = require("../utils/fileHelperAsync");
 
 /**
  * get users
- * @returns {Array} users[]
+ * @returns {Promise} a promise users[]
  */
 const getUsers = () => {
-  const rawJson = fs.readFileSync(filePath);
-  const users = JSON.parse(rawJson);
-
-  return users || [];
+  return readDataAsync();
 };
 
 /**
@@ -17,8 +13,8 @@ const getUsers = () => {
  * @param {number} id -user id
  * @returns {Object} user
  */
-const getUserById = (id) => {
-  const users = getUsers();
+const getUserById = async (id) => {
+  const users = await getUsers();
 
   return users.find((user) => user.id === Number(id));
 };

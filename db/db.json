@@ -1,14 +1,8 @@
 [
   {
+    "id": 1,
     "name": "muhibullah",
-    "phone": "0191145201",
-    "email": "muhibullah@gmail.com",
-    "id": 1
-  },
-  {
-    "name": "muhibullah2",
-    "phone": "0191145201",
-    "email": "muhibullah@gmail.com",
-    "id": 2
+    "phone": "017000000",
+    "email": "muhibullah@gmail.com"
   }
 ]
