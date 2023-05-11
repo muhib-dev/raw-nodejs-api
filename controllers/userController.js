@@ -3,6 +3,12 @@ const filePath = require("../utils/filePath");
 const userSevice = require("../services/userSevice");
 const response = require("../utils/response");
 
+/**
+ * Controller function to create new user
+ * @param {import('http').IncomingMessage} req - The incoming request object.
+ * @param {import('http').ServerResponse} res - The server response object.
+ * @returns {import('http').ServerResponse} The server response
+ */
 const createUser = (req, res) => {
   try {
     let body = req.body;
@@ -28,12 +34,24 @@ const createUser = (req, res) => {
   }
 };
 
-const getUsers = (_req, res) => {
+/**
+ * Controller function to get users
+ * @param {import('http').IncomingMessage} req - The incoming request object.
+ * @param {import('http').ServerResponse} res - The server response object.
+ * @returns {import('http').ServerResponse} The server response
+ */
+const getUsers = (req, res) => {
   const users = userSevice.getUsers();
 
   response(res, { data: users });
 };
 
+/**
+ * Controller function to get user by user id
+ * @param {import('http').IncomingMessage} req - The incoming request object.
+ * @param {import('http').ServerResponse} res - The server response object.
+ * @returns {import('http').ServerResponse} The server response
+ */
 const getUserById = (req, res) => {
   const { id } = req.params;
 
@@ -43,6 +61,12 @@ const getUserById = (req, res) => {
   response(res, { data });
 };
 
+/**
+ * Controller function to update user by user id
+ * @param {import('http').IncomingMessage} req - The incoming request object.
+ * @param {import('http').ServerResponse} res - The server response object.
+ * @returns {import('http').ServerResponse} The server response
+ */
 const updateUser = (req, res) => {
   const { id } = req.params;
   let users = userSevice.getUsers();
@@ -71,6 +95,12 @@ const updateUser = (req, res) => {
   });
 };
 
+/**
+ * Controller function to delete user by user id
+ * @param {import('http').IncomingMessage} req - The incoming request object.
+ * @param {import('http').ServerResponse} res - The server response object.
+ * @returns {import('http').ServerResponse} The server response
+ */
 const deleteUserById = (req, res) => {
   const { id } = req.params;
   let users = userSevice.getUsers();

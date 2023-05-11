@@ -1,6 +1,14 @@
 const response = require("../utils/response");
 
-const userPostValidation = (req, res, next) => {
+/**
+ * Middleware function to validate user data in a POST request.
+ * @param {import('http').IncomingMessage} req - The incoming request object.
+ * @param {import('http').ServerResponse} res - The server response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {void}
+ */
+
+const validateUserData = (req, res, next) => {
   let body = "";
 
   req.on("data", (chunk) => {
@@ -20,7 +28,7 @@ const userPostValidation = (req, res, next) => {
 
       req.body = body;
 
-      next();
+      next(req, res);
     } catch (error) {
       console.log(error);
       response(res, { status: 400, data: { message: error.message } });
@@ -29,5 +37,5 @@ const userPostValidation = (req, res, next) => {
 };
 
 module.exports = {
-  userPostValidation,
+  validateUserData,
 };

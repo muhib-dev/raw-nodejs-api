@@ -1,7 +1,16 @@
 const userController = require("../controllers/userController");
 const response = require("../utils/response");
-const { userPostValidation } = require("../validation/userValidation");
+const { validateUserData } = require("../validation/userValidation");
 
+/**
+ * Defines the routes and associated controllers for the application.
+ *
+ * @type {Object}
+ * @property {Object} / - The root route.
+ * @property {Object} /users - The users route.
+ * @property {Object} /users/:id - The user by ID route.
+ * @property {Function} notFound - The not found route controller.
+ */
 const routes = {
   "/": {
     GET: (_req, res) => {
@@ -11,30 +20,16 @@ const routes = {
   "/users": {
     GET: userController.getUsers,
     POST: (req, res) => {
-      userPostValidation(req, res, () => {
-        userController.createUser(req, res);
-      });
+      validateUserData(req, res, userController.createUser);
     },
   },
   "/users/:id": {
     GET: userController.getUserById,
     DELETE: userController.deleteUserById,
     PUT: (req, res) => {
-      userPostValidation(req, res, () => {
-        userController.updateUser(req, res);
-      });
+      validateUserData(req, res, userController.updateUser);
     },
   },
-  "/users/:id/name/:name": {
-    GET: userController.getUserById,
-    DELETE: userController.deleteUserById,
-    PUT: (req, res) => {
-      userPostValidation(req, res, () => {
-        userController.updateUser(req, res);
-      });
-    },
-  },
-
   notFound: (_req, res) => {
     response(res, {
       status: 404,
