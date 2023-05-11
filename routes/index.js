@@ -10,18 +10,29 @@ const routes = {
   },
   "/users": {
     GET: userController.getUsers,
-    POST: (req, res) =>
+    POST: (req, res) => {
       userPostValidation(req, res, () => {
         userController.createUser(req, res);
-      }),
+      });
+    },
   },
   "/users/:id": {
     GET: userController.getUserById,
-    PUT: (req, res) =>
+    DELETE: userController.deleteUserById,
+    PUT: (req, res) => {
       userPostValidation(req, res, () => {
         userController.updateUser(req, res);
-      }),
+      });
+    },
+  },
+  "/users/:id/name/:name": {
+    GET: userController.getUserById,
     DELETE: userController.deleteUserById,
+    PUT: (req, res) => {
+      userPostValidation(req, res, () => {
+        userController.updateUser(req, res);
+      });
+    },
   },
 
   notFound: (_req, res) => {

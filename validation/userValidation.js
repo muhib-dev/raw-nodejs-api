@@ -19,6 +19,7 @@ const userPostValidation = (req, res, next) => {
       }
 
       req.body = body;
+
       next();
     } catch (error) {
       console.log(error);

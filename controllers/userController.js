@@ -39,7 +39,8 @@ const getUserById = (req, res) => {
 
   const user = userSevice.getUserById(id);
 
-  response(res, { data: user });
+  const data = user ? user : { message: `user not found for id '${id}'` };
+  response(res, { data });
 };
 
 const updateUser = (req, res) => {
@@ -65,8 +66,8 @@ const updateUser = (req, res) => {
 
   response(res, {
     data: users,
-    message: "user successfully updated",
     status: 201,
+    message: "user successfully updated",
   });
 };
 
